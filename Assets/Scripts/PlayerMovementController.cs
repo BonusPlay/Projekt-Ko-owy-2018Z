@@ -13,11 +13,39 @@ public class PlayerMovementController : MonoBehaviour
 	public float MoveForce = 365f;
 	public float MaxSpeed = 5f;
 	public float JumpForce = 1000f;
+
+	#region Anti Slide Variables and Properties
+
+	[Tooltip("divide player's speed by this amount every time fixed update is being called, only if player is not generating input on horizontal axis, and IsOnIce = false")]
+	[Range(1.1f,50f)]
+	/// <summary>
+	/// divide player's speed by this amount every time fixed update is being called, only if player is not generating input on horizontal axis, and IsOnIce = false, and grounded = true;
+	/// </summary>
+	public float AntiSlideStrength = 10f;
+	[Tooltip("false = apply anti Slide, true = let the player slide")]	
+	/// <summary>
+	/// false = apply anti Slide, false = let the player slide
+	/// </summary>
+	public bool IsOnIce = false;
+
+	private float antiSlide{
+		get{
+			if(AntiSlideStrength <= 1f){
+				Debug.LogWarning("Dividing player's speed by number smaller than 1 would cause the player to gain speed, substituting with 2f instead");
+				return 2f;
+			}
+			return Mathf.Min(AntiSlideStrength,50f);
+		}
+	}
+
+	#endregion
+
 	public LayerMask GroundLayer;
 
 	private bool grounded = false;
 	private Animator anim;
 	private Rigidbody2D rb2d;
+	
 
 	// Use this for initialization
 	void Awake()
@@ -62,6 +90,9 @@ public class PlayerMovementController : MonoBehaviour
 			rb2d.AddForce(new Vector2(0f, JumpForce));
 			Jump = false;
 		}
+
+		//stop the player from sliding
+		AntiSlide(horizontal);
 	}
 
 	void Flip()
@@ -71,4 +102,21 @@ public class PlayerMovementController : MonoBehaviour
 		theScale.x *= -1;
 		transform.localScale = theScale;
 	}
+
+	#region Anti Sliding Functionality
+
+		private void AntiSlide(float inputAxis){
+			//if the player is not trying to move, and is not on ice
+			if(Mathf.Abs(inputAxis) < 0.3f && !IsOnIce && grounded){
+				//if the players speed is higher than 0.1f (to not divide player's speed forever)
+				if( Mathf.Abs(rb2d.velocity.x) > 0.1f){
+					rb2d.velocity = new Vector2(rb2d.velocity.x /antiSlide, rb2d.velocity.y);
+				}
+				else{
+					rb2d.velocity = new Vector2(0, rb2d.velocity.y);
+				}				
+			}
+
+		}
+	#endregion
 }
