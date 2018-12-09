@@ -28,16 +28,6 @@ public class PlayerMovementController : MonoBehaviour
 	/// </summary>
 	public bool IsOnIce = false;
 
-	private float antiSlide{
-		get{
-			if(AntiSlideStrength <= 1f){
-				Debug.LogWarning("Dividing player's speed by number smaller than 1 would cause the player to gain speed, substituting with 2f instead");
-				return 2f;
-			}
-			return Mathf.Min(AntiSlideStrength,50f);
-		}
-	}
-
 	#endregion
 
 	public LayerMask GroundLayer;
@@ -105,7 +95,15 @@ public class PlayerMovementController : MonoBehaviour
 
 	#region Anti Sliding Functionality
 
+
 		private void AntiSlide(float inputAxis){
+
+			float antiSlide = 2f;
+			if(AntiSlideStrength >= 1f){
+				antiSlide = Mathf.Min(AntiSlideStrength,50f);
+			}
+			
+
 			//if the player is not trying to move, and is not on ice
 			if(Mathf.Abs(inputAxis) < 0.3f && !IsOnIce && grounded){
 				//if the players speed is higher than 0.1f (to not divide player's speed forever)
