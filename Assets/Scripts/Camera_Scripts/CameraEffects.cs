@@ -29,7 +29,7 @@ public class CameraEffects : MonoBehaviour {
 	
 #endregion
 
-//SCREEN SHAKE IS NOT IMPLEMENTED YET
+
 	#region ScreenShakeVariables 
 	private CameraShakeEffect currentShakeEffect = null;
 
@@ -49,8 +49,6 @@ public class CameraEffects : MonoBehaviour {
 	}
 
 	private float lookAtTime;
-
-
 		
 	#endregion
 	void Start () {
@@ -82,7 +80,7 @@ public class CameraEffects : MonoBehaviour {
 	/// <param name="zoomValue">Orthographic size you want the camera to reach, lower = zoomed in, higher = zoomed out</param>
 	/// <param name="smoothing">Amount of smoothing you want in transition, 1 or 0 = no smoothing, 0.5 = fast smoothing, 0.1 = slow smoothing,</param>
 	/// <param name="priority">In case of multiple zoom effect added at once, only the highest priority effect is applied</param>
-	public void Zoom(float time, float zoomValue, float smoothing, int priority){
+	public void Zoom(float time =2f, float zoomValue = 3f, float smoothing =0.1f, int priority =0){
 		if(smoothing <= 0f){
 			smoothing = 1f;
 		}
@@ -120,9 +118,9 @@ public class CameraEffects : MonoBehaviour {
 	/// <summary>
 	/// Quick screen shake effect
 	/// </summary>
-	/// <param name="time"></param>
-	/// <param name="strength"></param>
-	public void ScreenShake(float time, float strength){
+	/// <param name="time">duration in seconds</param>
+	/// <param name="strength">strength, recomended value = 2</param>
+	public void ScreenShake(float time = 0.1f, float strength = 2){
 		strength = Mathf.Abs(strength);
 		if(currentShakeEffect == null){
 			currentShakeEffect = new CameraShakeEffect(time,strength);
@@ -134,6 +132,9 @@ public class CameraEffects : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// make the deadzone = 0, remove damping, shake the screen. Return to normal values afterwards
+	/// </summary>
 	private void applyShake(){
 		if (currentShakeEffect != null)
 		{
@@ -177,7 +178,7 @@ public class CameraEffects : MonoBehaviour {
 	/// </summary>
 	/// <param name="target">target's transform</param>
 	/// <param name="time">duration in seconds</param>
-	public void QuickLookAt(Transform target, float time){
+	public void QuickLookAt(Transform target, float time =2f){
 		QuickLookTarget = target;
 		lookAtTime = time;
 	}
@@ -206,30 +207,6 @@ public class CameraEffects : MonoBehaviour {
 		
 	}
 
-	/// <summary>
-	/// only for testing inside unity's editor
-	/// </summary>
-	public void TestZoom(){
-		Zoom(2f,2f,0.1f,0);
-	}
-	/// <summary>
-	/// only for testing inside unity's editor
-	/// </summary>
-	public void TestLookAt(){
-
-		var test = GameObject.FindObjectsOfType<BoxCollider2D>();
-
-		foreach (var item in test)
-		{
-			if(item.gameObject.name == "LookAtTestCube"){
-				QuickLookAt(item.transform,2);
-			}
-		}
-
-	}
-
-	public void TestScreenShake(){
-		ScreenShake(0.2f,2f);
-	}
+	
 }
 
