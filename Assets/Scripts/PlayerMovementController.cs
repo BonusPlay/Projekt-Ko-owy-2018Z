@@ -28,10 +28,11 @@ public class PlayerMovementController : MonoBehaviour
 	/// </summary>
 	public bool IsOnIce = false;
 
+	/* 
 	[SerializeField]
 	[Tooltip("true = check if the AntiSlideStrength is correct. false = trust me, im an programmer")]
 	private bool IdiotProofAntiSlide = true;
-
+	*/
 	#endregion
 
 	public LayerMask GroundLayer;
@@ -102,6 +103,7 @@ public class PlayerMovementController : MonoBehaviour
 
 		private void AntiSlide(float inputAxis){
 
+			/*
 			float antiSlide = 2f;
 			if(IdiotProofAntiSlide)
 			{			
@@ -109,8 +111,8 @@ public class PlayerMovementController : MonoBehaviour
 					antiSlide = Mathf.Min(AntiSlideStrength,50f);
 				}
 			}
-			else{
-				antiSlide = AntiSlideStrength;
+			else{*/
+				float antiSlide = AntiSlideStrength; /* 
 				if(AntiSlideStrength<1f){
 					Debug.LogWarning("Player speed is being divided by a number smaller than 1");
 				}
@@ -120,7 +122,7 @@ public class PlayerMovementController : MonoBehaviour
 					IdiotProofAntiSlide = true;
 				}
 			}
-
+			*/
 			//if the player is not trying to move, and is not on ice
 			if(Mathf.Abs(inputAxis) < 0.3f && !IsOnIce && grounded){
 				//if the players speed is higher than 0.1f (to not divide player's speed forever)
